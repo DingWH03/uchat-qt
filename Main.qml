@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ClientModel
 
 Window {
     width: 640
@@ -8,10 +9,14 @@ Window {
     visible: true
     title: qsTr("uchat")
 
+    ClientModel {
+        id: clientModel
+    }
+
     StackView {
             id: stackView
             anchors.fill: parent
-            initialItem: chatPage
+            initialItem: connectPage
         }
 
     Component {
@@ -30,5 +35,6 @@ Window {
             id: connectPage
             ConnectPage { }  // 引用 ConnectPage.qml
         }
+
 }
 

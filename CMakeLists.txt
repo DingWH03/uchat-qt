@@ -26,6 +26,8 @@ qt_add_qml_module(appuchat-qt
         QML_FILES
         SOURCES coreapi.h coreapi.cpp
         QML_FILES ConnectPage.qml
+        SOURCES
+        SOURCES clientmodel.h clientmodel.cpp
 
 )
 
@@ -33,7 +35,7 @@ qt_add_qml_module(appuchat-qt
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appuchat-qt PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appuchat-qt
+   MACOSX_BUNDLE_GUI_IDENTIFIER com.dingvero.appuchatqt
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
@@ -50,3 +52,4 @@ install(TARGETS appuchat-qt
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+

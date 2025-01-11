@@ -4,6 +4,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QQmlContext>
+#include "clientmodel.h"
 
 // 打印 QJsonObject 的函数
 void printResponse(const QJsonObject &response) {
@@ -17,6 +19,9 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    qmlRegisterType<ClientModel>("ClientModel", 1, 0, "ClientModel");
+
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

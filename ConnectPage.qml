@@ -18,8 +18,20 @@ Item {
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
+                id: serverIp
                 Layout.preferredWidth: 200
                 placeholderText: qsTr("请输入URL")
+            }
+            Text {
+                text: qsTr("端口号")
+                horizontalAlignment: Text.AlignRight
+                Layout.alignment: Qt.AlignRight
+            }
+            TextField {
+                id: serverPort
+                Layout.preferredWidth: 200
+                inputMask: "99999;" // 最多 5 位数字
+                placeholderText: qsTr("请输入Port")
             }
         }
 
@@ -28,6 +40,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter  // 让按钮居中
             Button {
                 text: qsTr("连接")
+                onClicked: clientModel.connectToServer(serverIp.text, parseInt(serverPort.text))
             }
         }
     }

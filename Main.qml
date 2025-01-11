@@ -11,6 +11,7 @@ Window {
 
     ClientModel {
         id: clientModel
+        onConnected: stackView.push(loginPage)
     }
 
     StackView {

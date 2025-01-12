@@ -11,8 +11,30 @@ Window {
 
     ClientModel {
         id: clientModel
-        onConnected: stackView.push(loginPage)
+
+        onConnected: {
+            notifier.showMessage("服务器连接成功", 3000)
+            stackView.push(loginPage)
+        }
+
+        onConnectionError: {
+            notifier.showMessage("与服务器的连接断开", 3000)
+            stackView.push(connectPage)
+        }
+
+        onLoginOk: function(message){
+            notifier.showMessage(message, 3000)
+            stackView.push(contactPage)
+        }
+
+        onLoginError: function(message){
+            notifier.showMessage(message, 3000)
+        }
     }
+
+    NotificationPopup {
+            id: notifier
+        }
 
     StackView {
             id: stackView
@@ -36,6 +58,22 @@ Window {
             id: connectPage
             ConnectPage { }  // 引用 ConnectPage.qml
         }
+
+    ListModel {
+        id: friendList
+                        ListElement { name: "Alice" }
+                        ListElement { name: "Bob" }
+                        ListElement { name: "Charlie" }
+                        ListElement { name: "Diane" }
+                        ListElement { name: "Eric" }
+                    }
+
+    ListModel {
+        id: groupList
+                        ListElement { title: "Group Chat A" }
+                        ListElement { title: "Group Chat B" }
+                        ListElement { title: "Group Chat C" }
+                    }
 
 }
 

@@ -24,7 +24,7 @@ Page {
             }
 
             ListView {
-                id: groupChatList
+                id: groupListView
                 clip: true
                 width: parent.width
                 // 让 ListView 高度根据内容自适应，从而能在外层 ScrollView 中看到所有项
@@ -33,11 +33,7 @@ Page {
                 interactive: false
 
                 // 模拟数据，可替换为实际的 model
-                model: ListModel {
-                    ListElement { title: "Group Chat A" }
-                    ListElement { title: "Group Chat B" }
-                    ListElement { title: "Group Chat C" }
-                }
+                model: groupList
 
                 delegate: Rectangle {
                     // 声明一个属性接收系统注入的 index，避免 “Unqualified access” 警告
@@ -67,7 +63,7 @@ Page {
             }
 
             ListView {
-                id: contactList
+                id: frientListView
                 clip: true
                 width: parent.width
                 // 同样让联系人列表自适应高度
@@ -75,13 +71,7 @@ Page {
                 interactive: false
 
                 // 模拟数据，可替换为实际的 model
-                model: ListModel {
-                    ListElement { name: "Alice" }
-                    ListElement { name: "Bob" }
-                    ListElement { name: "Charlie" }
-                    ListElement { name: "Diane" }
-                    ListElement { name: "Eric" }
-                }
+                model: friendList
 
                 delegate: Rectangle {
                     // 声明属性接收 index

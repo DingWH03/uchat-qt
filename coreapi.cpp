@@ -83,6 +83,7 @@ void CoreApi::getOnlineUsers()
     writerPacket(request);
 }
 
+/// 向服务器发送请求函数
 void CoreApi::writerPacket(const QJsonObject& json)
 {
     if (socket->state() != QAbstractSocket::ConnectedState) {
@@ -110,6 +111,7 @@ void CoreApi::writerPacket(const QJsonObject& json)
     }
 }
 
+/// 监听服务器响应
 void CoreApi::onReadyRead()
 {
     QMutexLocker locker(&bufferMutex);

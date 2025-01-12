@@ -28,6 +28,7 @@ qt_add_qml_module(appuchat-qt
         QML_FILES ConnectPage.qml
         SOURCES
         SOURCES clientmodel.h clientmodel.cpp
+        QML_FILES NotificationPopup.qml
 
 )
 

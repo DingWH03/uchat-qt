@@ -18,6 +18,7 @@ Item {
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
+                id: loginUserName
                 Layout.preferredWidth: 200
                 placeholderText: qsTr("请输入用户名")
             }
@@ -28,6 +29,7 @@ Item {
                 Layout.alignment: Qt.AlignRight
             }
             TextField {
+                id: loginPassword
                 Layout.preferredWidth: 200
                 placeholderText: qsTr("请输入密码")
             }
@@ -38,9 +40,11 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter  // 让按钮居中
             Button {
                 text: qsTr("注册")
+                onClicked: clientModel.sendRegister(loginUserName.text, loginPassword.text)
             }
             Button {
                 text: qsTr("登陆")
+                onClicked: clientModel.sendLogin(parseInt(loginUserName.text), loginPassword.text)
             }
         }
     }

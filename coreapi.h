@@ -18,8 +18,12 @@ public:
     Q_INVOKABLE void connectToServer(const QString& address, quint16 port);
     Q_INVOKABLE void sendRegister(const QString& username, const QString& password);
     Q_INVOKABLE void sendLogin(quint32 userId, const QString& password);
-    Q_INVOKABLE void sendMessage(quint32 receiver, const QString& message);
+    Q_INVOKABLE void sendMessage(quint32 group_id, quint32 receiver, const QString& message);
     Q_INVOKABLE void getOnlineUsers();
+    Q_INVOKABLE void getGroups();
+    Q_INVOKABLE void getFriends();
+    Q_INVOKABLE void addFriend(quint32 user_id);
+    Q_INVOKABLE void newGroup(QString groupName);
 
 signals:
     void connected();

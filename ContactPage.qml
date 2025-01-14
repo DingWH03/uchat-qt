@@ -33,7 +33,7 @@ Page {
                 interactive: false
 
                 // 模拟数据，可替换为实际的 model
-                model: groupList
+                model: clientModel.groupList
 
                 delegate: Rectangle {
                     // 声明一个属性接收系统注入的 index，避免 “Unqualified access” 警告
@@ -71,7 +71,7 @@ Page {
                 interactive: false
 
                 // 模拟数据，可替换为实际的 model
-                model: friendList
+                model: clientModel.friendList
 
                 delegate: Rectangle {
                     // 声明属性接收 index

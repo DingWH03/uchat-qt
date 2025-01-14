@@ -29,6 +29,9 @@ qt_add_qml_module(appuchat-qt
         SOURCES
         SOURCES clientmodel.h clientmodel.cpp
         QML_FILES NotificationPopup.qml
+        SOURCES contactItem.h
+        SOURCES friendListModel.h
+        SOURCES groupListModel.h
 
 )
 

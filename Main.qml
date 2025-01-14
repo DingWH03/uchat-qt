@@ -59,21 +59,5 @@ Window {
             ConnectPage { }  // 引用 ConnectPage.qml
         }
 
-    ListModel {
-        id: friendList
-                        ListElement { name: "Alice" }
-                        ListElement { name: "Bob" }
-                        ListElement { name: "Charlie" }
-                        ListElement { name: "Diane" }
-                        ListElement { name: "Eric" }
-                    }
-
-    ListModel {
-        id: groupList
-                        ListElement { title: "Group Chat A" }
-                        ListElement { title: "Group Chat B" }
-                        ListElement { title: "Group Chat C" }
-                    }
-
 }
 

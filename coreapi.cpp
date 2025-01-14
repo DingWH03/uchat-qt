@@ -64,12 +64,51 @@ void CoreApi::sendLogin(quint32 userId, const QString& password)
     writerPacket(request);
 }
 
-void CoreApi::sendMessage(quint32 receiver, const QString& message)
+void CoreApi::sendMessage(quint32 group_id, quint32 receiver, const QString& message)
 {
     QJsonObject request;
     request["action"] = "send_message";
+    request["group_id"] = static_cast<int>(group_id);
     request["receiver"] = static_cast<int>(receiver);
     request["message"] = message;
+
+    writerPacket(request);
+}
+
+void CoreApi::getGroups()
+{
+    QJsonObject request;
+    request["action"] = "request";
+    request["request"] = "get_groups";
+
+    writerPacket(request);
+}
+
+void CoreApi::getFriends()
+{
+    QJsonObject request;
+    request["action"] = "request";
+    request["request"] = "get_friends";
+
+    writerPacket(request);
+}
+
+void CoreApi::addFriend(quint32 user_id)
+{
+    QJsonObject request;
+    request["action"] = "objrequest";
+    request["request"] = "add_friend";
+    request["id"] = static_cast<int>(user_id);
+
+    writerPacket(request);
+}
+
+void CoreApi::newGroup(QString groupName)
+{
+    QJsonObject request;
+    request["action"] = "namerequest";
+    request["request"] = "newgroup";
+    request["name"] = groupName;
 
     writerPacket(request);
 }

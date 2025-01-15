@@ -27,18 +27,13 @@ Page {
                 id: groupListView
                 clip: true
                 width: parent.width
-                // 让 ListView 高度根据内容自适应，从而能在外层 ScrollView 中看到所有项
-                // contentHeight 表示所有列表项所需的总高度
                 height: contentHeight
                 interactive: false
 
-                // 模拟数据，可替换为实际的 model
                 model: clientModel.groupList
 
                 delegate: Rectangle {
-                    // 声明一个属性接收系统注入的 index，避免 “Unqualified access” 警告
                     property int rowIndex: index
-                    // 同理，使用 model.title，而不是直接用 title
                     property string chatTitle: model.title
 
                     width: parent.width
@@ -51,6 +46,14 @@ Page {
                         anchors.left: parent.left
                         anchors.leftMargin: 12
                         font.pointSize: 16
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            // 调用模型的点击处理函数
+                            clientModel.groupList.onGroupClicked(rowIndex);
+                        }
                     }
                 }
             }
@@ -66,15 +69,12 @@ Page {
                 id: frientListView
                 clip: true
                 width: parent.width
-                // 同样让联系人列表自适应高度
                 height: contentHeight
                 interactive: false
 
-                // 模拟数据，可替换为实际的 model
                 model: clientModel.friendList
 
                 delegate: Rectangle {
-                    // 声明属性接收 index
                     property int rowIndex: index
                     property string contactName: model.name
 
@@ -88,6 +88,14 @@ Page {
                         anchors.left: parent.left
                         anchors.leftMargin: 12
                         font.pointSize: 16
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            // 调用模型的点击处理函数
+                            clientModel.friendList.onFriendClicked(rowIndex);
+                        }
                     }
                 }
             }

@@ -1,4 +1,3 @@
-// GroupListModel.h
 #ifndef GROUPLISTMODEL_H
 #define GROUPLISTMODEL_H
 
@@ -53,8 +52,25 @@ public:
         return roles;
     }
 
+    Q_INVOKABLE GroupItem* getGroup(int index) const {
+        if (index < 0 || index >= m_groups.size())
+            return nullptr;
+        return m_groups[index];
+    }
+
     ~GroupListModel() {
         qDeleteAll(m_groups); // 确保在模型销毁时释放所有 GroupItem 对象
+    }
+
+signals:
+    void groupSelected(GroupItem* groupItem);
+
+public slots:
+    void onGroupClicked(int index) {
+        if (index >= 0 && index < m_groups.size()) {
+            emit groupSelected(m_groups[index]);
+            // qDebug()<<"select"<<m_groups[index]->id();
+        }
     }
 
 private:

@@ -18,7 +18,7 @@ Page {
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 60
-            model: chatModel
+            model: clientModel.chatModel
 
             // Reference the ChatMessageDelegate
             delegate: ChatMessageDelegate {
@@ -72,48 +72,6 @@ Page {
                     }
                 }
             }
-        }
-    }
-
-    // Define the chat model
-    ListModel {
-        id: chatModel
-        // Initial sample messages
-        ListElement {
-            sender: "Alice"
-            text: "你好，最近怎么样？"
-            isMine: false
-            isGroup: false
-        }
-        ListElement {
-            sender: "Me"
-            text: "我挺好的，谢谢！你呢？"
-            isMine: true
-            isGroup: false
-        }
-        ListElement {
-            sender: "Tom"
-            text: "大家好，我是Tom"
-            isMine: false
-            isGroup: true
-        }
-        ListElement {
-            sender: "Me"
-            text: "欢迎加入群聊！"
-            isMine: true
-            isGroup: true
-        }
-        ListElement {
-            sender: "Alice"
-            text: "周末有活动吗？"
-            isMine: false
-            isGroup: false
-        }
-        ListElement {
-            sender: "Me"
-            text: "打算周日出去爬山，你来吗？"
-            isMine: true
-            isGroup: false
         }
     }
 }

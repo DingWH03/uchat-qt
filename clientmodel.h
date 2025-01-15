@@ -8,6 +8,7 @@
 #include "coreapi.h"
 #include "friendListModel.h"
 #include "groupListModel.h"
+#include "chatmodel.h"
 
 struct UserSimpleInfo {
     quint32 user_id;
@@ -44,6 +45,11 @@ class ClientModel : public QObject
     Q_PROPERTY(FriendListModel* friendList READ friendList CONSTANT)
     Q_PROPERTY(GroupListModel* groupList READ groupList CONSTANT)
 
+    Q_PROPERTY(ChatModel* chatModel READ chatModel NOTIFY chatModelChanged)
+    Q_PROPERTY(QString currentChatName READ currentChatName NOTIFY currentChatNameChanged)
+    Q_PROPERTY(bool isCurrentChatGroup READ isCurrentChatGroup NOTIFY isCurrentChatGroupChanged)
+    Q_PROPERTY(quint32 currentUserId READ currentUserId CONSTANT)
+
 public:
     explicit ClientModel(QObject *parent = nullptr);
 
@@ -54,11 +60,29 @@ public:
     FriendListModel* friendList() const { return m_friendList; }
     GroupListModel* groupList() const { return m_groupList; }
 
+    // New methods
+    ChatModel* chatModel() const { return m_chatModel; }
+    QString currentChatName() const { return m_currentChatName; }
+    bool isCurrentChatGroup() const { return m_isCurrentChatGroup; }
+    quint32 currentUserId() const { return m_currentUserId; } // Assume you have this
+
+    QString getChatName(quint32 chatId) const;
+    Q_INVOKABLE void sendMessage(const QString &text);
+
+    Q_INVOKABLE void setCurrentChat(quint32 chatId); // Method to change current chat
+
 
 private:
     CoreApi api;
     FriendListModel *m_friendList;
     GroupListModel *m_groupList;
+
+    quint32 m_currentChatId;
+    QString m_currentChatName;
+    bool m_isCurrentChatGroup;
+    quint32 m_currentUserId;
+
+    ChatModel *m_chatModel;
 
 signals:
     void connected();
@@ -82,6 +106,10 @@ signals:
     void messagesReceived(quint32 sender, const QList<Message>& messages);
     void groupMessagesReceived(quint32 groupId, const QList<Message>& messages);
 
+    void chatModelChanged();
+    void currentChatNameChanged();
+    void isCurrentChatGroupChanged();
+
 private slots:
     void handleConnected();
     void handleConnectionError();
@@ -89,6 +117,9 @@ private slots:
 
     void onFriendListReceived(const QList<UserSimpleInfo>& friendInfos);
     void onGroupListReceived(const QList<GroupSimpleInfo>& groupInfos);
+
+    void handleMessagesReceived(quint32 sender_id, const QList<Message> &messages);
+    void handleGroupMessagesReceived(quint32 group_id, const QList<Message> &messages);
 };
 
 

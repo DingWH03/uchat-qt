@@ -7,7 +7,12 @@
 ClientModel::ClientModel(QObject *parent)
     : QObject(parent),
     m_friendList(new FriendListModel(this)),
-    m_groupList(new GroupListModel(this))
+    m_groupList(new GroupListModel(this)),
+    m_chatModel(new ChatModel(this)),
+    m_currentChatId(0),
+    m_currentChatName(""),
+    m_isCurrentChatGroup(false),
+    m_currentUserId(0)
 {
     // 连接 CoreApi 的信号到 ClientModel 的槽
     connect(&api, &CoreApi::connected, this, &ClientModel::handleConnected);
@@ -15,6 +20,8 @@ ClientModel::ClientModel(QObject *parent)
     connect(&api, &CoreApi::serverResponseReceived, this, &ClientModel::handleServerResponse);
     connect(this, &ClientModel::friendListReceived, this, &ClientModel::onFriendListReceived);
     connect(this, &ClientModel::groupListReceived, this, &ClientModel::onGroupListReceived);
+    connect(this, &ClientModel::messagesReceived, this, &ClientModel::handleMessagesReceived);
+    connect(this, &ClientModel::groupMessagesReceived, this, &ClientModel::handleGroupMessagesReceived);
 
 }
 
@@ -32,28 +39,95 @@ void ClientModel::sendRegister(const QString &userName, const QString &password)
 
 void ClientModel::handleConnected() {
     emit connected();
-    // FriendItem *test = new FriendItem;
-    // test->setId(1);
-    // test->setName("dwh");
-    // m_friendList->addFriend(test);
-    // GroupItem *test2 = new GroupItem;
-    // test2->setId(1);
-    // test2->setTitle("group2");
-    // m_groupList->addGroup(test2);
-
-    // QList<FriendItem> friends = api.getFriends();
-    // for (const FriendItem &friendItem : friends) {
-    //     m_friendList->addFriend(friendItem);
-    // }
-
-    // QList<GroupItem> groups = api.getGroups();
-    // for (const GroupItem &groupItem : groups) {
-    //     m_groupList->addGroup(groupItem);
-    // }
 }
 
 void ClientModel::handleConnectionError() {
     emit connectionError();
+}
+
+void ClientModel::setCurrentChat(quint32 chatId)
+{
+    if (m_currentChatId == chatId)
+        return;
+
+    m_currentChatId = chatId;
+
+    // Determine if it's a group chat or private chat
+    // This logic depends on your application's structure
+    // For example:
+    // m_isCurrentChatGroup = isGroupChat(chatId);
+
+    // Update chat name
+    m_currentChatName = getChatName(chatId);
+
+    // Load messages for the new chat
+    m_chatModel->clearMessages();
+    m_chatModel->loadMessages(chatId);
+
+    emit chatModelChanged();
+    emit currentChatNameChanged();
+    emit isCurrentChatGroupChanged();
+}
+
+QString ClientModel::getChatName(quint32 chatId) const
+{
+    if (m_isCurrentChatGroup) {
+        // Fetch group name from groupList
+        // Example:
+        // return m_groupList->getGroupName(chatId);
+    } else {
+        // Fetch user name from friendList
+        // Example:
+        // return m_friendList->getFriendName(chatId);
+    }
+    return QString("聊天"); // Default fallback
+}
+
+void ClientModel::handleMessagesReceived(quint32 sender_id, const QList<Message> &messages)
+{
+    if (m_currentChatId != 0 && !m_isCurrentChatGroup) { // Private chat
+        for (const Message &msg : messages) {
+            ChatMessage chatMsg;
+            chatMsg.sender_id = msg.sender_id;
+            chatMsg.message = msg.message;
+            chatMsg.timestamp = msg.timestamp;
+            m_chatModel->addMessage(chatMsg);
+            // Optionally, save to disk
+        }
+    }
+}
+
+void ClientModel::handleGroupMessagesReceived(quint32 group_id, const QList<Message> &messages)
+{
+    if (m_currentChatId != 0 && m_isCurrentChatGroup) { // Group chat
+        for (const Message &msg : messages) {
+            ChatMessage chatMsg;
+            chatMsg.sender_id = msg.sender_id;
+            chatMsg.message = msg.message;
+            chatMsg.timestamp = msg.timestamp;
+            m_chatModel->addMessage(chatMsg);
+            // Optionally, save to disk
+        }
+    }
+}
+
+void ClientModel::sendMessage(const QString &text)
+{
+    if (m_currentChatId == 0)
+        return;
+
+    // Create and send the message via API
+    // Example:
+    // api.sendMessage(m_currentChatId, text);
+
+    // Add the sent message to the model
+    ChatMessage chatMsg;
+    chatMsg.sender_id = m_currentUserId;
+    chatMsg.message = text;
+    chatMsg.timestamp = QDateTime::currentDateTime();
+    m_chatModel->addMessage(chatMsg);
+
+    // Optionally, save to disk
 }
 
 void ClientModel::onFriendListReceived(const QList<UserSimpleInfo>& friendInfos) {

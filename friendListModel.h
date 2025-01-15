@@ -1,4 +1,3 @@
-// FriendListModel.h
 #ifndef FRIENDLISTMODEL_H
 #define FRIENDLISTMODEL_H
 
@@ -53,8 +52,25 @@ public:
         return roles;
     }
 
+    Q_INVOKABLE FriendItem* getFriend(int index) const {
+        if (index < 0 || index >= m_friends.size())
+            return nullptr;
+        return m_friends[index];
+    }
+
     ~FriendListModel() {
         qDeleteAll(m_friends); // 确保在模型销毁时释放所有 FriendItem 对象
+    }
+
+signals:
+    void friendSelected(FriendItem* friendItem);
+
+public slots:
+    void onFriendClicked(int index) {
+        if (index >= 0 && index < m_friends.size()) {
+            emit friendSelected(m_friends[index]);
+            // qDebug()<<"select"<<m_friends[index]->id();
+        }
     }
 
 private:

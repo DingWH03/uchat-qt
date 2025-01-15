@@ -32,6 +32,7 @@ qt_add_qml_module(appuchat-qt
         SOURCES contactItem.h
         SOURCES friendListModel.h
         SOURCES groupListModel.h
+        SOURCES chatmodel.h chatmodel.cpp
 
 )
 

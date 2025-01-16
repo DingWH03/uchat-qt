@@ -66,10 +66,9 @@ public:
     bool isCurrentChatGroup() const { return m_isCurrentChatGroup; }
     quint32 currentUserId() const { return m_currentUserId; } // Assume you have this
 
-    QString getChatName(quint32 chatId) const;
     Q_INVOKABLE void sendMessage(const QString &text);
 
-    Q_INVOKABLE void setCurrentChat(quint32 chatId); // Method to change current chat
+    Q_INVOKABLE void setCurrentChat(quint32 chatId, QString chatName); // Method to change current chat
 
 
 private:
@@ -107,7 +106,7 @@ signals:
     void groupMessagesReceived(quint32 groupId, const QList<Message>& messages);
 
     void chatModelChanged();
-    void currentChatNameChanged();
+    void currentChatNameChanged(const QString title);
     void isCurrentChatGroupChanged();
 
 private slots:

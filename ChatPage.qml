@@ -5,44 +5,83 @@ import QtQuick.Layouts 6.2
 import QtQml 6.2
 
 Page {
-    id: page
+    id: chatPageContent
     title: qsTr("聊天")
 
-    // Overall layout with vertical arrangement
+    signal backRequested()
+
     ColumnLayout {
         anchors.fill: parent
 
-        // ListView to display chat messages
+        // 头部区域
+        Rectangle {
+            id: header
+            Layout.fillWidth: true
+            height: 60
+            color: "#FFFFFF"
+            border.color: "#CCCCCC"
+            border.width: 1
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 10
+
+                Button {
+                    id: backButton
+                    text: "< 返回"
+                    width: 80
+                    height: 40
+                    onClicked: {
+                        chatPageContent.backRequested()
+                    }
+                }
+
+                Text {
+                    id: usernameLabel
+                    text: clientModel.currentChatName
+                    font.pixelSize: 20
+                    font.bold: true
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    Layout.fillWidth: true
+                }
+            }
+        }
+
+        // 聊天消息列表
         ListView {
             id: chatList
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            // 建议把 spacing 调小，比如 10
             spacing: 60
+            // clip: true  // 防止越界绘制
+
             model: clientModel.chatModel
 
-            // Reference the ChatMessageDelegate
             delegate: ChatMessageDelegate {
-                sender: model.sender
-                text: model.text
-                isMine: model.isMine
-                isGroup: model.isGroup
-                width: parent.width  // Ensure delegate takes full width for proper alignment
+                text: model.message
+                isMine: model.is_mine
+                timestamp: model.timestamp
+                width: parent.width
             }
 
-            // Automatically scroll to the bottom when new messages are added
+            // 新消息时自动滚动到底部
             onCountChanged: {
-                chatList.positionViewAtEnd();
+                chatList.positionViewAtEnd()
             }
         }
 
-        // Input area for sending new messages
+        // 输入区域
         Rectangle {
             id: inputArea
             Layout.fillWidth: true
             height: 50
             color: "#F0F0F0"
             border.color: "#CCCCCC"
-            border.width: 1
+            border.width: 6
 
             RowLayout {
                 anchors.fill: parent
@@ -61,13 +100,6 @@ Page {
                     text: qsTr("发送")
                     enabled: messageInput.text.trim() !== ""
                     onClicked: {
-                        // Add new message to the model
-                        chatModel.append({
-                            sender: "Me",
-                            text: messageInput.text,
-                            isMine: true,
-                            isGroup: false  // Set to true if it's a group chat
-                        });
                         messageInput.text = "";
                     }
                 }

@@ -45,42 +45,34 @@ void ClientModel::handleConnectionError() {
     emit connectionError();
 }
 
-void ClientModel::setCurrentChat(quint32 chatId)
+void ClientModel::setCurrentChat(quint32 chatId, QString chatName)
 {
     if (m_currentChatId == chatId)
         return;
 
     m_currentChatId = chatId;
+    qDebug()<<chatId;
 
-    // Determine if it's a group chat or private chat
-    // This logic depends on your application's structure
-    // For example:
-    // m_isCurrentChatGroup = isGroupChat(chatId);
-
-    // Update chat name
-    m_currentChatName = getChatName(chatId);
+    m_currentChatName = chatName;
 
     // Load messages for the new chat
     m_chatModel->clearMessages();
-    m_chatModel->loadMessages(chatId);
+
+    ChatMessage chatMsg;
+    chatMsg.is_mine = true;
+    chatMsg.message = "Hello";
+    chatMsg.timestamp = QDateTime::currentDateTime();
+    m_chatModel->addMessage(chatMsg);
+
+    ChatMessage chatMsg2;
+    chatMsg2.is_mine = false;
+    chatMsg2.message = "Hello2";
+    chatMsg2.timestamp = QDateTime::currentDateTime();
+    m_chatModel->addMessage(chatMsg2);
 
     emit chatModelChanged();
-    emit currentChatNameChanged();
+    emit currentChatNameChanged(m_currentChatName);
     emit isCurrentChatGroupChanged();
-}
-
-QString ClientModel::getChatName(quint32 chatId) const
-{
-    if (m_isCurrentChatGroup) {
-        // Fetch group name from groupList
-        // Example:
-        // return m_groupList->getGroupName(chatId);
-    } else {
-        // Fetch user name from friendList
-        // Example:
-        // return m_friendList->getFriendName(chatId);
-    }
-    return QString("聊天"); // Default fallback
 }
 
 void ClientModel::handleMessagesReceived(quint32 sender_id, const QList<Message> &messages)
@@ -88,11 +80,10 @@ void ClientModel::handleMessagesReceived(quint32 sender_id, const QList<Message>
     if (m_currentChatId != 0 && !m_isCurrentChatGroup) { // Private chat
         for (const Message &msg : messages) {
             ChatMessage chatMsg;
-            chatMsg.sender_id = msg.sender_id;
+            chatMsg.is_mine = msg.sender_id;
             chatMsg.message = msg.message;
             chatMsg.timestamp = msg.timestamp;
             m_chatModel->addMessage(chatMsg);
-            // Optionally, save to disk
         }
     }
 }
@@ -102,7 +93,7 @@ void ClientModel::handleGroupMessagesReceived(quint32 group_id, const QList<Mess
     if (m_currentChatId != 0 && m_isCurrentChatGroup) { // Group chat
         for (const Message &msg : messages) {
             ChatMessage chatMsg;
-            chatMsg.sender_id = msg.sender_id;
+            chatMsg.is_mine = msg.sender_id;
             chatMsg.message = msg.message;
             chatMsg.timestamp = msg.timestamp;
             m_chatModel->addMessage(chatMsg);
@@ -122,7 +113,7 @@ void ClientModel::sendMessage(const QString &text)
 
     // Add the sent message to the model
     ChatMessage chatMsg;
-    chatMsg.sender_id = m_currentUserId;
+    chatMsg.is_mine = m_currentUserId;
     chatMsg.message = text;
     chatMsg.timestamp = QDateTime::currentDateTime();
     m_chatModel->addMessage(chatMsg);

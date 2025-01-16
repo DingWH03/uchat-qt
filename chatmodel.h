@@ -7,7 +7,7 @@
 #include <QFile>
 
 struct ChatMessage {
-    quint32 sender_id;
+    bool is_mine;
     QString message;
     QDateTime timestamp;
 };
@@ -17,7 +17,7 @@ class ChatModel : public QAbstractListModel
     Q_OBJECT
 public:
     enum ChatRoles {
-        SenderIdRole = Qt::UserRole + 1,
+        isMine,
         MessageRole,
         TimestampRole
     };
@@ -34,13 +34,10 @@ public:
 
     // Methods to manage messages
     void addMessage(const ChatMessage &msg);
-    void loadMessages(quint32 chatId);
-    void saveMessages(quint32 chatId);
     void clearMessages();
 
 private:
     QVector<ChatMessage> m_messages;
-    quint32 m_currentChatId;
 };
 
 #endif // CHATMODEL_H

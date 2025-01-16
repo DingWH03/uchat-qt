@@ -30,7 +30,30 @@ Window {
         onLoginError: function(message){
             notifier.showMessage(message, 3000)
         }
+        // onCurrentChatNameChanged: function(title){
+        //     // chatPageContent.chatTitle = title
+        //     console.log(title)
+        // }
     }
+
+    Connections {
+            target: clientModel.friendList
+
+            function onFriendSelected(friend) {
+                console.log("Selected friend: " + friend)
+                clientModel.setCurrentChat(friend.id, friend.name)
+                stackView.push(chatPage)
+            }
+        }
+
+    Connections {
+            target: clientModel.groupList
+
+            function onGroupSelected(group) {
+                console.log("Selected friend: " + group)
+
+            }
+        }
 
     NotificationPopup {
             id: notifier
@@ -48,7 +71,12 @@ Window {
         }
     Component {
             id: chatPage
-            ChatPage { }  // 引用 ChatPage.qml
+
+            ChatPage {
+                onBackRequested: {
+                    stackView.pop()
+                }
+            }  // 引用 ChatPage.qml
         }
     Component {
             id: contactPage
